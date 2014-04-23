@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:simpleType name="nonEmptyString">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="shortString">
+		<xs:restriction base="nonEmptyString">
+			<xs:maxLength value="40"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="httpLink">
+		<xs:restriction base="xs:anyURI">
+			<xs:pattern value="https?://.+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="path">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\.?[a-zA-Z\d#x20_\-]+(/\.?[a-zA-Z\d#x20_\-]+)+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="cmf">
+		<xs:complexType>
+			<xs:all>
+				<xs:element type="shortString" name="name"/>
+				<xs:element type="shortString" name="author"/>
+				<xs:element type="nonEmptyString" name="desc" minOccurs="0"/>
+				<xs:element name="shortDesc">
+					<xs:simpleType>
+						<xs:restriction base="nonEmptyString">
+							<xs:maxLength value="140"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element type="httpLink" name="homepage"/>
+				<xs:element type="httpLink" name="updateLink" minOccurs="0"/>
+				<xs:element name="id">
+					<xs:simpleType>
+						<xs:restriction base="xs:base64Binary">
+							<xs:length value="32" fixed="true"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="version">
+					<xs:complexType>
+						<xs:choice maxOccurs="unbounded">
+							<xs:element name="v">
+								<xs:simpleType>
+									<xs:restriction base="shortString">
+										<xs:pattern value="\p{L}+|\p{Nd}+"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:choice>
+						<xs:attribute name="format" use="required">
+							<xs:simpleType>
+								<xs:restriction base="shortString">
+									<xs:pattern value="([^\{\}]|\{\{|\}\})*\{\}([^\{\}]|\{\{|\}\}|\{\})*"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="tags" minOccurs="0">
+					<xs:complexType>
+						<xs:choice maxOccurs="unbounded">
+							<xs:element type="shortString" name="tag"/>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="changelog">
+					<xs:complexType>
+						<xs:choice maxOccurs="unbounded">
+							<xs:element name="entry">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="nonEmptyString">
+											<xs:attribute type="shortString" name="version" use="required"/>
+											<xs:attribute type="xs:date" name="date" use="required"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="files">
+					<xs:complexType>
+						<xs:choice maxOccurs="unbounded">
+							<xs:element type="path" name="modify"/>
+							<xs:element type="path" name="add"/>
+							<xs:element type="path" name="replace"/>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+			<xs:attribute type="xs:unsignedShort" name="version" use="required"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

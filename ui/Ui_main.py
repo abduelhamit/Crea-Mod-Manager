@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/abdul/git/Crea-Mod-Manager/ui/main.ui'
 #
-# Created: Thu Apr 24 13:48:03 2014
+# Created: Thu Apr 24 13:56:01 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,17 +26,17 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(640, 480)
+        MainWindow.resize(532, 434)
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.pushButton = QtGui.QPushButton(self.centralWidget)
-        self.pushButton.setGeometry(QtCore.QRect(130, 10, 87, 27))
+        self.pushButton.setGeometry(QtCore.QRect(430, 10, 87, 27))
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.lineEdit = QtGui.QLineEdit(self.centralWidget)
-        self.lineEdit.setGeometry(QtCore.QRect(10, 10, 113, 24))
+        self.lineEdit.setGeometry(QtCore.QRect(10, 10, 411, 24))
         self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
         self.textBrowser = QtGui.QTextBrowser(self.centralWidget)
-        self.textBrowser.setGeometry(QtCore.QRect(10, 50, 512, 384))
+        self.textBrowser.setGeometry(QtCore.QRect(10, 40, 512, 384))
         self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
         MainWindow.setCentralWidget(self.centralWidget)
 

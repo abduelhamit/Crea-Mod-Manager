@@ -3,7 +3,7 @@
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
 
-from lib import process_command
+from helper import process_command
 from ui.Ui_main import Ui_MainWindow
 
 

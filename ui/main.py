@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QMainWindow
+from PyQt4.QtGui import QMainWindow, QFileDialog
 from PyQt4.QtCore import pyqtSignature
 
 from mod_file import load_info
@@ -13,9 +13,8 @@ class Main(QMainWindow, Ui_MainWindow):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
-    @pyqtSignature("")
-    def on_pushButton_clicked(self):
-        mod = load_info(self.lineEdit.text())
+    def show_cmf_info(self):
+        mod = load_info(self.modFile.text())
         display_text = []
         display_text += mod.name.text
         display_text += " (" + mod.version.get("format").format(
@@ -52,8 +51,31 @@ class Main(QMainWindow, Ui_MainWindow):
                 display_text += "\n" + replace.text
         except TypeError:
             display_text += "\nnothing"
-        self.textBrowser.setText("".join(display_text))
+        self.out.setText("".join(display_text))
 
     @pyqtSignature("")
     def on_lineEdit_returnPressed(self):
         self.on_pushButton_clicked()
+
+    @pyqtSignature("")
+    def on_installButton_clicked(self):
+        pass
+
+    @pyqtSignature("")
+    def on_modFile_returnPressed(self):
+        self.show_cmf_info()
+
+    @pyqtSignature("")
+    def on_modFileButton_clicked(self):
+        file_name = QFileDialog.getOpenFileName(
+            self, filter="Crea Mod File (*.cmf)")
+        self.modFile.setText(file_name)
+        self.show_cmf_info()
+
+    @pyqtSignature("")
+    def on_creaPath_returnPressed(self):
+        pass
+
+    @pyqtSignature("")
+    def on_creaPathButton_clicked(self):
+        pass

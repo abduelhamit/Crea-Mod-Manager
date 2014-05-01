@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/abdul/git/Crea-Mod-Manager/ui/main.ui'
 #
-# Created: Thu Apr 24 13:56:01 2014
+# Created: Thu May  1 19:56:11 2014
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,26 +26,45 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(532, 434)
+        MainWindow.resize(532, 474)
         self.centralWidget = QtGui.QWidget(MainWindow)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
-        self.pushButton = QtGui.QPushButton(self.centralWidget)
-        self.pushButton.setGeometry(QtCore.QRect(430, 10, 87, 27))
-        self.pushButton.setObjectName(_fromUtf8("pushButton"))
-        self.lineEdit = QtGui.QLineEdit(self.centralWidget)
-        self.lineEdit.setGeometry(QtCore.QRect(10, 10, 411, 24))
-        self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
-        self.textBrowser = QtGui.QTextBrowser(self.centralWidget)
-        self.textBrowser.setGeometry(QtCore.QRect(10, 40, 512, 384))
-        self.textBrowser.setObjectName(_fromUtf8("textBrowser"))
+        self.installButton = QtGui.QPushButton(self.centralWidget)
+        self.installButton.setGeometry(QtCore.QRect(430, 40, 87, 27))
+        self.installButton.setObjectName(_fromUtf8("installButton"))
+        self.modFile = QtGui.QLineEdit(self.centralWidget)
+        self.modFile.setGeometry(QtCore.QRect(70, 10, 421, 24))
+        self.modFile.setObjectName(_fromUtf8("modFile"))
+        self.out = QtGui.QTextBrowser(self.centralWidget)
+        self.out.setGeometry(QtCore.QRect(10, 80, 512, 384))
+        self.out.setObjectName(_fromUtf8("out"))
+        self.modFileButton = QtGui.QToolButton(self.centralWidget)
+        self.modFileButton.setGeometry(QtCore.QRect(490, 10, 26, 22))
+        self.modFileButton.setObjectName(_fromUtf8("modFileButton"))
+        self.label = QtGui.QLabel(self.centralWidget)
+        self.label.setGeometry(QtCore.QRect(10, 11, 51, 20))
+        self.label.setObjectName(_fromUtf8("label"))
+        self.label_2 = QtGui.QLabel(self.centralWidget)
+        self.label_2.setGeometry(QtCore.QRect(10, 43, 58, 21))
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.creaPath = QtGui.QLineEdit(self.centralWidget)
+        self.creaPath.setGeometry(QtCore.QRect(70, 40, 331, 24))
+        self.creaPath.setObjectName(_fromUtf8("creaPath"))
+        self.creaPathButton = QtGui.QToolButton(self.centralWidget)
+        self.creaPathButton.setGeometry(QtCore.QRect(400, 40, 26, 22))
+        self.creaPathButton.setObjectName(_fromUtf8("creaPathButton"))
         MainWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
-        self.pushButton.setText(_translate("MainWindow", "OK", None))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Crea Mod Manager", None))
+        self.installButton.setText(_translate("MainWindow", "Install", None))
+        self.modFileButton.setText(_translate("MainWindow", "...", None))
+        self.label.setText(_translate("MainWindow", "Mod file", None))
+        self.label_2.setText(_translate("MainWindow", "Crea path", None))
+        self.creaPathButton.setText(_translate("MainWindow", "...", None))
 
 
 if __name__ == "__main__":

@@ -7,44 +7,106 @@
     <x>0</x>
     <y>0</y>
     <width>532</width>
-    <height>434</height>
+    <height>474</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Crea Mod Manager</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="installButton">
     <property name="geometry">
      <rect>
       <x>430</x>
-      <y>10</y>
+      <y>40</y>
       <width>87</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>OK</string>
+     <string>Install</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="modFile">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>70</x>
       <y>10</y>
-      <width>411</width>
+      <width>421</width>
       <height>24</height>
      </rect>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="textBrowser">
+   <widget class="QTextBrowser" name="out">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>40</y>
+      <y>80</y>
       <width>512</width>
       <height>384</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="modFileButton">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>10</y>
+      <width>26</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>...</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>11</y>
+      <width>51</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Mod file</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>43</y>
+      <width>58</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Crea path</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="creaPath">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>40</y>
+      <width>331</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="creaPathButton">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>40</y>
+      <width>26</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>...</string>
     </property>
    </widget>
   </widget>

@@ -4,7 +4,7 @@
 from PyQt4.QtGui import QMainWindow
 from PyQt4.QtCore import pyqtSignature
 
-from helper import process_command
+from mod_file import load_info
 from ui.Ui_main import Ui_MainWindow
 
 
@@ -15,7 +15,44 @@ class Main(QMainWindow, Ui_MainWindow):
 
     @pyqtSignature("")
     def on_pushButton_clicked(self):
-        self.textBrowser.setText(process_command(self, self.lineEdit.text()))
+        mod = load_info(self.lineEdit.text())
+        display_text = []
+        display_text += mod.name.text
+        display_text += " (" + mod.version.get("format").format(
+            *mod.version.getchildren()) + ")"
+        display_text += " by " + mod.author.text
+        display_text += "\n\n" + mod.shortDesc.text
+        display_text += "\n\n" + mod.homepage.text
+        display_text += "\n\n----------------------------------------"
+        display_text += "---------------------------------------"
+        display_text += "\n\n" + mod.desc.text
+        display_text += "\n\n----------------------------------------"
+        display_text += "---------------------------------------"
+        display_text += "\n\nChangelog:"
+        for entry in mod.changelog.entry:
+            display_text += "\n\n{} ({}):\n{}".format(
+                entry.get("version"), entry.get("date"), entry.text)
+        display_text += "\n\n----------------------------------------"
+        display_text += "---------------------------------------"
+        display_text += "\n\nAdds:"
+        try:
+            for add in mod.files.add:
+                display_text += "\n" + add.text
+        except TypeError:
+            display_text += "\nnothing"
+        display_text += "\n\nModifies:"
+        try:
+            for modify in mod.files.modify:
+                display_text += "\n" + modify.text
+        except TypeError:
+            display_text += "\nnothing"
+        display_text += "\n\nReplaces:"
+        try:
+            for replace in mod.files.replace:
+                display_text += "\n" + replace.text
+        except TypeError:
+            display_text += "\nnothing"
+        self.textBrowser.setText("".join(display_text))
 
     @pyqtSignature("")
     def on_lineEdit_returnPressed(self):

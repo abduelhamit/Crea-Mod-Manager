@@ -16,7 +16,7 @@ class Main(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
-        # instantiate our manager singleton
+        # instantiate our self.manager singleton
         self.manager = ModManager()
         # ModListView.currentChanged() will emit
         # the 'current_mod_changed' signal
@@ -24,23 +24,39 @@ class Main(QMainWindow, Ui_MainWindow):
             self.update_current_mod)
 
     def is_current_mod_in_installed_list(self):
-        return manager.is_mod_installed(
+        return self.manager.is_mod_installed(
             installed_list = \
             [str(self.installedMods.model().item(i).text()) for i in
              xrange(self.installedMods.model().rowCount())])
 
     def update_mod_text(self, path=None):
-        if path is None:
-            info_text = parse_info(manager.current_mod)
-        else:
-            info_text = parse_info(load_info(self.modFile.text()))
-        self.out.setText(info_text)
+        try:
+            if path is None:
+                info_text = parse_info(self.manager.current_mod)
+            else:
+                info_text = parse_info(load_info(path))
+            self.out.setText(info_text)
+            return True
+        except (XMLSyntaxError) as error:
+            if error.message:
+                message = error.message
+            else:
+                message = "Unknown error"
+            QMessageBox.critical(
+                self, "CMF Parsing Error",
+                "Oops. Something went wrong while opening the CMF:\n{}".format(
+                    message))
+        return False
 
-    def update_current_mod(self, current_index):
-        manager.update_current_mod(
-            current_index,
-            lambda index: str(index.data().toString())
+    def update_current_mod(self, index):
+        self.manager.update_current_mod(
+            str(index.data().toString())
         )
+        self.update_mod_text()
+    
+    def new_current_mod(self, path):
+        self.manager.new_current_mod(path)
+        self.modFile.setText(path)
         self.update_mod_text()
 
     @pyqtSignature("")
@@ -53,101 +69,37 @@ class Main(QMainWindow, Ui_MainWindow):
         if not self.is_current_mod_in_installed_list():
             # add its name to the installed list
             self.installedMods.model().appendRow(
-                QStandardItem(manager.get_mod_name()))
+                QStandardItem(self.manager.get_mod_name()))
             # and install it
-            manager.install()
+            self.manager.install()
 
     @pyqtSignature("")
     def on_uninstallButton_clicked(self):
-        if len(manager.installed_mods) > 0:
+        if len(self.manager.installed_mods) > 0:
             if self.is_current_mod_in_installed_list():
                 # uninstall the mod
-                manager.uninstall()
+                self.manager.uninstall()
                 # and remove it from the installed list
                 self.installedMods.model().removeRow(
                     self.installedMods.model().indexFromItem(
                         self.installedMods.model().findItems(
-                            manager.get_mod_name()
+                            self.manager.get_mod_name()
                         )[0]
                     ).row()
                 )
 
-    def set_info_text(self, path):
-        try:
-<<<<<<< HEAD
-            info_text = parse_info(path)
-        except (XMLSyntaxError) as error:
-            if error.message:
-                message = error.message
-||||||| merged common ancestors
-            info_text = parse_info(self.modFile.text())
-        except (XMLSyntaxError) as e:
-            if e.message:
-                message = e.message
-=======
-            update_mod_text(self.modFile.text())
-        except (XMLSyntaxError) as e:
-            if e.message:
-                message = e.message
->>>>>>> broken-modlist
-            else:
-                message = "Unknown error"
-            QMessageBox.critical(
-                self, "CMF Parsing Error",
-                "Oops. Something went wrong while opening the CMF:\n{}".format(
-                    message))
-<<<<<<< HEAD
-            return False
-        self.out.setText(info_text)
-        return True
-
     @pyqtSignature("")
     def on_modFile_returnPressed(self):
-        self.set_info_text(self.modFile.text())
-||||||| merged common ancestors
-            return
-        self.out.setText(info_text)
-=======
-            return
->>>>>>> broken-modlist
+        self.update_mod_text(self.modFile.text())
 
     @pyqtSignature("")
     def on_modFileButton_clicked(self):
         file_name = QFileDialog.getOpenFileName(
             self, filter="Crea Mod File (*.cmf)")
-        if not file_name or not self.set_info_text(file_name):
+        if not file_name or not self.update_mod_text(file_name):
             return
-<<<<<<< HEAD
-||||||| merged common ancestors
-        try:
-            info_text = parse_info(file_name)
-        except (XMLSyntaxError) as e:
-            if e.message:
-                message = e.message
-            else:
-                message = "Unknown error"
-            QMessageBox.critical(
-                self, "CMF Parsing Error",
-                "Oops. Something went wrong while opening the CMF:\n{}".format(
-                    message))
-            return
-        self.out.setText(info_text)
-=======
-        try:
-            manager.current_mod = load_info(file_name)
-        except (XMLSyntaxError) as e:
-            if e.message:
-                message = e.message
-            else:
-                message = "Unknown error"
-            QMessageBox.critical(
-                self, "CMF Parsing Error",
-                "Oops. Something went wrong while opening the CMF:\n{}".format(
-                    message))
-            return
-        self.update_mod_text()
->>>>>>> broken-modlist
-        self.modFile.setText(file_name)
+        else:
+            self.new_current_mod(file_name)
 
     def check_crea_path(self, path):
         if not QFile.exists(path + "/Crea") and not QFile.exists(

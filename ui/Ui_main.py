@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Fri May 02 07:56:05 2014
+# Created: Fri May 02 13:11:37 2014
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -73,8 +73,7 @@ class Ui_MainWindow(object):
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.installedMods = ModListView(self.centralWidget)
         self.installedMods.setGeometry(QtCore.QRect(535, 30, 201, 431))
-        self.installedMods.setEditTriggers(QtGui.QAbstractItemView.AllEditTriggers)
-        self.installedMods.setSelectionBehavior(QtGui.QAbstractItemView.SelectItems)
+        self.installedMods.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.installedMods.setLayoutMode(QtGui.QListView.SinglePass)
         self.installedMods.setObjectName(_fromUtf8("installedMods"))
         MainWindow.setCentralWidget(self.centralWidget)

@@ -26,9 +26,9 @@ class Main(QMainWindow, Ui_MainWindow):
     def on_modFile_returnPressed(self):
         try:
             info_text = parse_info(self.modFile.text())
-        except (XMLSyntaxError) as e:
-            if e.message:
-                message = e.message
+        except (XMLSyntaxError) as error:
+            if error.message:
+                message = error.message
             else:
                 message = "Unknown error"
             QMessageBox.critical(
@@ -46,9 +46,9 @@ class Main(QMainWindow, Ui_MainWindow):
             return
         try:
             info_text = parse_info(file_name)
-        except (XMLSyntaxError) as e:
-            if e.message:
-                message = e.message
+        except (XMLSyntaxError) as error:
+            if error.message:
+                message = error.message
             else:
                 message = "Unknown error"
             QMessageBox.critical(

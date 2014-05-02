@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from lxml.etree import XMLSyntaxError
-from PyQt4.QtGui import QMainWindow, QFileDialog, QMessageBox, \
-    QStandardItem, QStandardItemModel
+from PyQt4.QtGui import (
+    QMainWindow, QFileDialog, QMessageBox, QStandardItem, QStandardItemModel)
 from PyQt4.QtCore import pyqtSignature, QModelIndex
 
 from mod_file import load_info, parse_info
@@ -27,25 +27,34 @@ class Main(QMainWindow, Ui_MainWindow):
 
     def is_current_mod_in_installed_list(self):
         if self.current_mod is not None:
-            return self.current_mod.name.text in \
-                [row for row in
-                    [str(self.installedMods.model().item(i).text()) for i in
-                     xrange(self.installedMods.model().rowCount())]
-                ]
+            return self.current_mod.name.text in [row for row in [
+                str(self.installedMods.model().item(i).text()) for i in xrange(
+                    self.installedMods.model().rowCount())]]
         return False
 
     def update_mod_text(self, path=None):
-        if path is None:
-            info_text = parse_info(self.current_mod)
+        if path:
+            try:
+                mod = load_info(path)
+            except (XMLSyntaxError) as e:
+                if e.message:
+                    message = e.message
+                else:
+                    message = "Unknown error"
+                QMessageBox.critical(
+                    self, "CMF Parsing Error",
+                    "Oops. Something went wrong while opening the CMF:\n{}".format(
+                        message))
+                return False
         else:
-            info_text = parse_info(load_info(self.modFile.text()))
-        self.out.setText(info_text)
+            mod = self.current_mod
+        self.out.setText(parse_info(mod))
+        return mod
 
     def update_current_mod(self, current_index):
         # retrieve the mod data using the mod name
         self.current_mod = self.installed_mods_data[
-            str(current_index.data().toString())
-        ]
+            str(current_index.data().toString())]
         self.update_mod_text()
 
     @pyqtSignature("")
@@ -62,8 +71,8 @@ class Main(QMainWindow, Ui_MainWindow):
             self.installedMods.model().appendRow(
                 QStandardItem(self.current_mod.name.text))
             # and add its data to the data record
-            self.installed_mods_data[self.current_mod.name.text] = \
-                self.current_mod
+            self.installed_mods_data[
+                self.current_mod.name.text] = self.current_mod
 
     @pyqtSignature("")
     def on_uninstallButton_clicked(self):
@@ -75,25 +84,11 @@ class Main(QMainWindow, Ui_MainWindow):
                 self.installedMods.model().removeRow(
                     self.installedMods.model().indexFromItem(
                         self.installedMods.model().findItems(
-                            self.current_mod.name.text
-                        )[0]
-                    ).row()
-                )
+                            self.current_mod.name.text)[0]).row())
 
     @pyqtSignature("")
     def on_modFile_returnPressed(self):
-        try:
-            update_mod_text(self.modFile.text())
-        except (XMLSyntaxError) as e:
-            if e.message:
-                message = e.message
-            else:
-                message = "Unknown error"
-            QMessageBox.critical(
-                self, "CMF Parsing Error",
-                "Oops. Something went wrong while opening the CMF:\n{}".format(
-                    message))
-            return
+        self.update_mod_text(self.modFile.text())
 
     @pyqtSignature("")
     def on_modFileButton_clicked(self):
@@ -101,19 +96,12 @@ class Main(QMainWindow, Ui_MainWindow):
             self, filter="Crea Mod File (*.cmf)")
         if not file_name:
             return
-        try:
-            self.current_mod = load_info(file_name)
-        except (XMLSyntaxError) as e:
-            if e.message:
-                message = e.message
-            else:
-                message = "Unknown error"
-            QMessageBox.critical(
-                self, "CMF Parsing Error",
-                "Oops. Something went wrong while opening the CMF:\n{}".format(
-                    message))
+
+        mod = self.update_mod_text(file_name)
+        if not mod:
             return
-        self.update_mod_text()
+
+        self.current_mod = mod
         self.modFile.setText(file_name)
 
     @pyqtSignature("")

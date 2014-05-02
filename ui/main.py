@@ -43,7 +43,7 @@ class Main(QMainWindow, Ui_MainWindow):
                     message = "Unknown error"
                 QMessageBox.critical(
                     self, "CMF Parsing Error",
-                    "Oops. Something went wrong while opening the CMF:\n{}".format(
+                    "Something went wrong while opening the CMF:\n{}".format(
                         message))
                 return False
         else:
@@ -104,10 +104,20 @@ class Main(QMainWindow, Ui_MainWindow):
         self.current_mod = mod
         self.modFile.setText(file_name)
 
+    def check_crea_path(self, path):
+        if not QFile.exists(path + "/Crea") and not QFile.exists(
+                path + "\\Crea.exe"):
+            QMessageBox.critical(self, "Crea Path Error", "Crea not found.")
+            return False
+        return True
+
     @pyqtSignature("")
     def on_creaPath_returnPressed(self):
-        pass
+        self.check_crea_path(self.creaPath.text())
 
     @pyqtSignature("")
     def on_creaPathButton_clicked(self):
-        pass
+        crea_path = QFileDialog.getExistingDirectory(self)
+        if not crea_path or not self.check_crea_path(crea_path):
+            return
+        self.creaPath.setText(crea_path)

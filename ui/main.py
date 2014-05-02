@@ -7,6 +7,7 @@ from PyQt4.QtGui import QMainWindow, QFileDialog, QMessageBox, \
 from PyQt4.QtCore import pyqtSignature, QModelIndex
 
 from mod_file import load_info, parse_info
+from ModManager import ModManager
 from ui.Ui_main import Ui_MainWindow
 from ModListView import ModListView
 
@@ -15,37 +16,31 @@ class Main(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
-        # keep data of one mod loaded
-        self.current_mod = None
-        # keep a dict of {mod_name: mod_data}
-        # TODO: subclass Item for mod data
-        # instead of keeping it in a member variable
-        self.installed_mods_data = {}
+        # instantiate our manager singleton
+        self.manager = ModManager()
         # ModListView.currentChanged() will emit
         # the 'current_mod_changed' signal
-        self.installedMods.current_mod_changed.connect(self.update_current_mod)
+        self.installedMods.current_mod_changed.connect(
+            self.update_current_mod)
 
     def is_current_mod_in_installed_list(self):
-        if self.current_mod is not None:
-            return self.current_mod.name.text in \
-                [row for row in
-                    [str(self.installedMods.model().item(i).text()) for i in
-                     xrange(self.installedMods.model().rowCount())]
-                ]
-        return False
+        return manager.is_mod_installed(
+            installed_list = \
+            [str(self.installedMods.model().item(i).text()) for i in
+             xrange(self.installedMods.model().rowCount())])
 
     def update_mod_text(self, path=None):
         if path is None:
-            info_text = parse_info(self.current_mod)
+            info_text = parse_info(manager.current_mod)
         else:
             info_text = parse_info(load_info(self.modFile.text()))
         self.out.setText(info_text)
 
     def update_current_mod(self, current_index):
-        # retrieve the mod data using the mod name
-        self.current_mod = self.installed_mods_data[
-            str(current_index.data().toString())
-        ]
+        manager.update_current_mod(
+            current_index,
+            lambda index: str(index.data().toString())
+        )
         self.update_mod_text()
 
     @pyqtSignature("")
@@ -56,26 +51,23 @@ class Main(QMainWindow, Ui_MainWindow):
     def on_installButton_clicked(self):
         # if we haven't already installed the mod
         if not self.is_current_mod_in_installed_list():
-            # install the mod
-            # TODO: install
             # add its name to the installed list
             self.installedMods.model().appendRow(
-                QStandardItem(self.current_mod.name.text))
-            # and add its data to the data record
-            self.installed_mods_data[self.current_mod.name.text] = \
-                self.current_mod
+                QStandardItem(manager.get_mod_name()))
+            # and install it
+            manager.install()
 
     @pyqtSignature("")
     def on_uninstallButton_clicked(self):
-        if self.installedMods.model().rowCount() > 0:
+        if len(manager.installed_mods) > 0:
             if self.is_current_mod_in_installed_list():
                 # uninstall the mod
-                # TODO: uninstall
+                manager.uninstall()
                 # and remove it from the installed list
                 self.installedMods.model().removeRow(
                     self.installedMods.model().indexFromItem(
                         self.installedMods.model().findItems(
-                            self.current_mod.name.text
+                            manager.get_mod_name()
                         )[0]
                     ).row()
                 )
@@ -142,7 +134,7 @@ class Main(QMainWindow, Ui_MainWindow):
         self.out.setText(info_text)
 =======
         try:
-            self.current_mod = load_info(file_name)
+            manager.current_mod = load_info(file_name)
         except (XMLSyntaxError) as e:
             if e.message:
                 message = e.message

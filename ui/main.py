@@ -4,7 +4,7 @@
 from lxml.etree import XMLSyntaxError
 from PyQt4.QtGui import (
     QMainWindow, QFileDialog, QMessageBox, QStandardItem, QStandardItemModel)
-from PyQt4.QtCore import pyqtSignature, QModelIndex
+from PyQt4.QtCore import pyqtSignature, QModelIndex, QFile
 
 from mod_file import load_info, parse_info
 from ui.Ui_main import Ui_MainWindow
@@ -65,6 +65,13 @@ class Main(QMainWindow, Ui_MainWindow):
     def on_installButton_clicked(self):
         # if we haven't already installed the mod
         if not self.is_current_mod_in_installed_list():
+            mod = self.update_mod_text(self.modFile.text())
+            if not mod:
+                return
+            self.current_mod = mod
+
+            self.check_crea_path(self.creaPath.text())
+
             # install the mod
             # TODO: install
             # add its name to the installed list
@@ -78,6 +85,7 @@ class Main(QMainWindow, Ui_MainWindow):
     def on_uninstallButton_clicked(self):
         if self.installedMods.model().rowCount() > 0:
             if self.is_current_mod_in_installed_list():
+                self.check_crea_path(self.creaPath.text())
                 # uninstall the mod
                 # TODO: uninstall
                 # and remove it from the installed list
@@ -102,7 +110,6 @@ class Main(QMainWindow, Ui_MainWindow):
             return
 
         self.current_mod = mod
-        self.modFile.setText(file_name)
 
     def check_crea_path(self, path):
         if not QFile.exists(path + "/Crea") and not QFile.exists(

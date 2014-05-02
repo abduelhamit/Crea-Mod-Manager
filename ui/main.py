@@ -22,10 +22,9 @@ class Main(QMainWindow, Ui_MainWindow):
     def on_installButton_clicked(self):
         pass
 
-    @pyqtSignature("")
-    def on_modFile_returnPressed(self):
+    def set_info_text(self, path):
         try:
-            info_text = parse_info(self.modFile.text())
+            info_text = parse_info(path)
         except (XMLSyntaxError) as error:
             if error.message:
                 message = error.message
@@ -39,24 +38,16 @@ class Main(QMainWindow, Ui_MainWindow):
         self.out.setText(info_text)
 
     @pyqtSignature("")
+    def on_modFile_returnPressed(self):
+        self.set_info_text(self.modFile.text())
+
+    @pyqtSignature("")
     def on_modFileButton_clicked(self):
         file_name = QFileDialog.getOpenFileName(
             self, filter="Crea Mod File (*.cmf)")
         if not file_name:
             return
-        try:
-            info_text = parse_info(file_name)
-        except (XMLSyntaxError) as error:
-            if error.message:
-                message = error.message
-            else:
-                message = "Unknown error"
-            QMessageBox.critical(
-                self, "CMF Parsing Error",
-                "Oops. Something went wrong while opening the CMF:\n{}".format(
-                    message))
-            return
-        self.out.setText(info_text)
+        self.set_info_text(file_name)
         self.modFile.setText(file_name)
 
     @pyqtSignature("")

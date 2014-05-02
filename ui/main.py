@@ -80,67 +80,27 @@ class Main(QMainWindow, Ui_MainWindow):
                     ).row()
                 )
 
-    def set_info_text(self, path):
+    @pyqtSignature("")
+    def on_modFile_returnPressed(self):
         try:
-<<<<<<< HEAD
-            info_text = parse_info(path)
-        except (XMLSyntaxError) as error:
-            if error.message:
-                message = error.message
-||||||| merged common ancestors
-            info_text = parse_info(self.modFile.text())
-        except (XMLSyntaxError) as e:
-            if e.message:
-                message = e.message
-=======
             update_mod_text(self.modFile.text())
         except (XMLSyntaxError) as e:
             if e.message:
                 message = e.message
->>>>>>> broken-modlist
             else:
                 message = "Unknown error"
             QMessageBox.critical(
                 self, "CMF Parsing Error",
                 "Oops. Something went wrong while opening the CMF:\n{}".format(
                     message))
-<<<<<<< HEAD
-            return False
-        self.out.setText(info_text)
-        return True
-
-    @pyqtSignature("")
-    def on_modFile_returnPressed(self):
-        self.set_info_text(self.modFile.text())
-||||||| merged common ancestors
             return
-        self.out.setText(info_text)
-=======
-            return
->>>>>>> broken-modlist
 
     @pyqtSignature("")
     def on_modFileButton_clicked(self):
         file_name = QFileDialog.getOpenFileName(
             self, filter="Crea Mod File (*.cmf)")
-        if not file_name or not self.set_info_text(file_name):
+        if not file_name:
             return
-<<<<<<< HEAD
-||||||| merged common ancestors
-        try:
-            info_text = parse_info(file_name)
-        except (XMLSyntaxError) as e:
-            if e.message:
-                message = e.message
-            else:
-                message = "Unknown error"
-            QMessageBox.critical(
-                self, "CMF Parsing Error",
-                "Oops. Something went wrong while opening the CMF:\n{}".format(
-                    message))
-            return
-        self.out.setText(info_text)
-=======
         try:
             self.current_mod = load_info(file_name)
         except (XMLSyntaxError) as e:
@@ -154,23 +114,12 @@ class Main(QMainWindow, Ui_MainWindow):
                     message))
             return
         self.update_mod_text()
->>>>>>> broken-modlist
         self.modFile.setText(file_name)
-
-    def check_crea_path(self, path):
-        if not QFile.exists(path + "/Crea") and not QFile.exists(
-                path + "\Crea.exe"):
-            QMessageBox.critical(self, "Crea Path Error", "Crea not found.")
-            return False
-        return True
 
     @pyqtSignature("")
     def on_creaPath_returnPressed(self):
-        self.check_crea_path(self.creaPath.text())
+        pass
 
     @pyqtSignature("")
     def on_creaPathButton_clicked(self):
-        crea_path = QFileDialog.getExistingDirectory(self)
-        if not crea_path or not self.check_crea_path(crea_path):
-            return
-        self.creaPath.setText(crea_path)
+        pass

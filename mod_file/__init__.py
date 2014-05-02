@@ -16,9 +16,7 @@ def load_info(path):
     cmf = objectify.fromstring(xml, parser)
     return cmf
 
-
-def parse_info(path):
-    mod = load_info(path)
+def parse_info(mod):
     display_text = []
     display_text += mod.name.text
     display_text += " (" + mod.version.get("format").format(

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\GitHub\Crea-Mod-Manager\ui\main.ui'
+# Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Thu May 01 23:06:44 2014
+# Created: Fri May 02 13:11:37 2014
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,8 +26,20 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(532, 474)
+        MainWindow.resize(750, 475)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        MainWindow.setSizePolicy(sizePolicy)
+        MainWindow.setMinimumSize(QtCore.QSize(750, 475))
+        MainWindow.setMaximumSize(QtCore.QSize(750, 475))
         self.centralWidget = QtGui.QWidget(MainWindow)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
+        self.centralWidget.setSizePolicy(sizePolicy)
         self.centralWidget.setObjectName(_fromUtf8("centralWidget"))
         self.installButton = QtGui.QPushButton(self.centralWidget)
         self.installButton.setGeometry(QtCore.QRect(430, 10, 87, 27))
@@ -36,7 +48,7 @@ class Ui_MainWindow(object):
         self.modFile.setGeometry(QtCore.QRect(70, 10, 331, 24))
         self.modFile.setObjectName(_fromUtf8("modFile"))
         self.out = QtGui.QTextBrowser(self.centralWidget)
-        self.out.setGeometry(QtCore.QRect(10, 80, 512, 384))
+        self.out.setGeometry(QtCore.QRect(10, 80, 512, 381))
         self.out.setObjectName(_fromUtf8("out"))
         self.modFileButton = QtGui.QToolButton(self.centralWidget)
         self.modFileButton.setGeometry(QtCore.QRect(400, 10, 26, 22))
@@ -56,6 +68,14 @@ class Ui_MainWindow(object):
         self.uninstallButton = QtGui.QPushButton(self.centralWidget)
         self.uninstallButton.setGeometry(QtCore.QRect(430, 40, 87, 27))
         self.uninstallButton.setObjectName(_fromUtf8("uninstallButton"))
+        self.label_3 = QtGui.QLabel(self.centralWidget)
+        self.label_3.setGeometry(QtCore.QRect(600, 10, 71, 20))
+        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.installedMods = ModListView(self.centralWidget)
+        self.installedMods.setGeometry(QtCore.QRect(535, 30, 201, 431))
+        self.installedMods.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.installedMods.setLayoutMode(QtGui.QListView.SinglePass)
+        self.installedMods.setObjectName(_fromUtf8("installedMods"))
         MainWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(MainWindow)
@@ -69,14 +89,6 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "Crea path", None))
         self.creaPathButton.setText(_translate("MainWindow", "...", None))
         self.uninstallButton.setText(_translate("MainWindow", "Uninstall", None))
+        self.label_3.setText(_translate("MainWindow", "Installed Mods", None))
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtGui.QApplication(sys.argv)
-    MainWindow = QtGui.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
-
+from ModListView import ModListView

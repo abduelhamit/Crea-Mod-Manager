@@ -51,7 +51,7 @@ class Main(QMainWindow, Ui_MainWindow):
         self.modFile.setText(file_name)
 
     def check_crea_path(self, path):
-        if not QFile.exists(path + "/Crea") or not QFile.exists(
+        if not QFile.exists(path + "/Crea") and not QFile.exists(
                 path + "\Crea.exe"):
             QMessageBox.critical(self, "Crea Path Error", "Crea not found.")
             return False
@@ -59,7 +59,7 @@ class Main(QMainWindow, Ui_MainWindow):
 
     @pyqtSignature("")
     def on_creaPath_returnPressed(self):
-        self.creaPath.setText(self.creaPath.text())
+        self.check_crea_path(self.creaPath.text())
 
     @pyqtSignature("")
     def on_creaPathButton_clicked(self):

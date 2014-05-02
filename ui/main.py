@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QMainWindow, QFileDialog
+from lxml.etree import XMLSyntaxError
+from PyQt4.QtGui import QMainWindow, QFileDialog, QMessageBox
 from PyQt4.QtCore import pyqtSignature
 
 from mod_file import load_info
@@ -14,7 +15,18 @@ class Main(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
     def show_cmf_info(self):
-        mod = load_info(self.modFile.text())
+        try:
+            mod = load_info(self.modFile.text())
+        except (XMLSyntaxError) as e:
+            if e.message:
+                message = e.message
+            else:
+                message = "Unknown error"
+            QMessageBox.critical(
+                self, "CMF Parsing Error",
+                "Oops. Something went wrong while opening the CMF:\n{}".format(
+                    message))
+            return
         display_text = []
         display_text += mod.name.text
         display_text += " (" + mod.version.get("format").format(
@@ -69,6 +81,8 @@ class Main(QMainWindow, Ui_MainWindow):
     def on_modFileButton_clicked(self):
         file_name = QFileDialog.getOpenFileName(
             self, filter="Crea Mod File (*.cmf)")
+        if not file_name:
+            return
         self.modFile.setText(file_name)
         self.show_cmf_info()
 

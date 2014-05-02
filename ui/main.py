@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from lxml.etree import XMLSyntaxError
-from PyQt4.QtGui import QMainWindow, QFileDialog, QMessageBox, QStandardItem
-from PyQt4.QtCore import pyqtSignature, SIGNAL, QModelIndex
+from PyQt4.QtGui import QMainWindow, QFileDialog, QMessageBox, \
+    QStandardItem, QStandardItemModel
+from PyQt4.QtCore import pyqtSignature, QModelIndex
 
 from mod_file import load_info, parse_info
 from ui.Ui_main import Ui_MainWindow
@@ -18,16 +19,13 @@ class Main(QMainWindow, Ui_MainWindow):
         self.current_mod = None
         # keep a dict of {mod_name: mod_data}
         # TODO: subclass Item for mod data
+        # instead of keeping it in a member variable
         self.installed_mods_data = {}
-        self.installedMods = ModListView()
-        # ModListView.currentChanged() will send
+        # ModListView.currentChanged() will emit
         # the 'current_mod_changed' signal
-        self.connect(self, SIGNAL('current_mod_changed'),
-                     self.update_current_mod)
+        self.installedMods.current_mod_changed.connect(self.update_current_mod)
 
     def is_current_mod_in_installed_list(self):
-        print [str(self.installedMods.model().item(i).text()) for i in
-                     xrange(self.installedMods.model().rowCount())]
         if self.current_mod is not None:
             return self.current_mod.name.text in \
                 [row for row in
@@ -45,11 +43,10 @@ class Main(QMainWindow, Ui_MainWindow):
 
     def update_current_mod(self, current_index):
         # retrieve the mod data using the mod name
-        self.current_mod = self.installed_mods_data[current_index.data()]
+        self.current_mod = self.installed_mods_data[
+            str(current_index.data().toString())
+        ]
         self.update_mod_text()
-
-    def reset_model(self):
-        self.installedMods.setModel(self.installedMods.model())
 
     @pyqtSignature("")
     def on_lineEdit_returnPressed(self):
@@ -61,17 +58,12 @@ class Main(QMainWindow, Ui_MainWindow):
         if not self.is_current_mod_in_installed_list():
             # install the mod
             # TODO: install
-            # and add it to the installed list
-            #self.installedMods.model().beginInsertRows(
-            #    QModelIndex(),
-            #    self.installedMods.model().rowCount(),
-            #    self.installedMods.model().rowCount())
+            # add its name to the installed list
             self.installedMods.model().appendRow(
                 QStandardItem(self.current_mod.name.text))
-            #self.installedMods.model().endInsertRows()
-            #for i in (self.installedMods.model().createIndex(j, 0) for j in xrange(self.installedMods.model().rowCount())):
-            #    self.installedMods.update(i)
-            self.reset_model()
+            # and add its data to the data record
+            self.installed_mods_data[self.current_mod.name.text] = \
+                self.current_mod
 
     @pyqtSignature("")
     def on_uninstallButton_clicked(self):
@@ -80,14 +72,13 @@ class Main(QMainWindow, Ui_MainWindow):
                 # uninstall the mod
                 # TODO: uninstall
                 # and remove it from the installed list
-                index = self.installedMods.model().indexFromItem(
+                self.installedMods.model().removeRow(
+                    self.installedMods.model().indexFromItem(
                         self.installedMods.model().findItems(
-                        self.current_mod.name.text)[0]
+                            self.current_mod.name.text
+                        )[0]
                     ).row()
-                #self.installedMods.model().beginRemoveRows(
-                #    QModelIndex(), index, index)
-                self.installedMods.model().removeRow(index)
-                #self.installedMods.model().endRemoveRows()
+                )
 
     @pyqtSignature("")
     def on_modFile_returnPressed(self):

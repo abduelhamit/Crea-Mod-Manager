@@ -7,10 +7,7 @@ class ModManager:
     def __init__(self):
         # keep data of one mod loaded
         self.current_mod = None
-        # names of installed mods
-        self.installed_mods = []
-        # dict of {mod_name: mod_data};
-        # self.current_mod may be in here but not installed
+        # dict of {mod_name: mod_data}
         self.installed_mods = {}
 
     def get_mod_name(self, mod=None):

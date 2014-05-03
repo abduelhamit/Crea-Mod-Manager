@@ -63,13 +63,27 @@ class Main(QMainWindow, Ui_MainWindow):
     def on_lineEdit_returnPressed(self):
         self.on_pushButton_clicked()
 
+    def add_mod_to_list(self, mod=None):
+        if mod is None:
+            mod = self.manager.current_mod
+        self.installedMods.model().appendRow(
+            QStandardItem(self.manager.get_mod_name(mod)))
+
+    def refresh_mod_list(self):
+        # remove all rows
+        print self.manager.installed_mods
+        self.installedMods.model().removeRows(
+            0, self.installedMods.model().rowCount())
+        # and re-add installed mods
+        for mod in self.manager.installed_mods.values():
+            self.add_mod_to_list(mod)
+
     @pyqtSignature("")
     def on_installButton_clicked(self):
         # if we haven't already installed the mod
         if not self.is_current_mod_in_installed_list():
             # add its name to the installed list
-            self.installedMods.model().appendRow(
-                QStandardItem(self.manager.get_mod_name()))
+            self.add_mod_to_list()
             # and install it
             self.manager.install()
 
@@ -87,6 +101,15 @@ class Main(QMainWindow, Ui_MainWindow):
                         )[0]
                     ).row()
                 )
+    
+    @pyqtSignature("")
+    def on_saveButton_clicked(self):
+        self.manager.save_mod_list()
+    
+    @pyqtSignature("")
+    def on_loadButton_clicked(self):
+        self.manager.load_mod_list()
+        self.refresh_mod_list()
 
     @pyqtSignature("")
     def on_modFile_returnPressed(self):

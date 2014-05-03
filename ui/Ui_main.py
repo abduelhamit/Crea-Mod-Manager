@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Fri May 02 13:11:37 2014
+# Created: Fri May 02 19:46:02 2014
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -48,7 +48,7 @@ class Ui_MainWindow(object):
         self.modFile.setGeometry(QtCore.QRect(70, 10, 331, 24))
         self.modFile.setObjectName(_fromUtf8("modFile"))
         self.out = QtGui.QTextBrowser(self.centralWidget)
-        self.out.setGeometry(QtCore.QRect(10, 80, 512, 381))
+        self.out.setGeometry(QtCore.QRect(10, 80, 510, 385))
         self.out.setObjectName(_fromUtf8("out"))
         self.modFileButton = QtGui.QToolButton(self.centralWidget)
         self.modFileButton.setGeometry(QtCore.QRect(400, 10, 26, 22))
@@ -72,10 +72,16 @@ class Ui_MainWindow(object):
         self.label_3.setGeometry(QtCore.QRect(600, 10, 71, 20))
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.installedMods = ModListView(self.centralWidget)
-        self.installedMods.setGeometry(QtCore.QRect(535, 30, 201, 431))
+        self.installedMods.setGeometry(QtCore.QRect(530, 30, 210, 400))
         self.installedMods.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.installedMods.setLayoutMode(QtGui.QListView.SinglePass)
         self.installedMods.setObjectName(_fromUtf8("installedMods"))
+        self.saveButton = QtGui.QPushButton(self.centralWidget)
+        self.saveButton.setGeometry(QtCore.QRect(665, 440, 75, 25))
+        self.saveButton.setObjectName(_fromUtf8("saveButton"))
+        self.loadButton = QtGui.QPushButton(self.centralWidget)
+        self.loadButton.setGeometry(QtCore.QRect(530, 440, 75, 25))
+        self.loadButton.setObjectName(_fromUtf8("loadButton"))
         MainWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(MainWindow)
@@ -90,5 +96,7 @@ class Ui_MainWindow(object):
         self.creaPathButton.setText(_translate("MainWindow", "...", None))
         self.uninstallButton.setText(_translate("MainWindow", "Uninstall", None))
         self.label_3.setText(_translate("MainWindow", "Installed Mods", None))
+        self.saveButton.setText(_translate("MainWindow", "Save", None))
+        self.loadButton.setText(_translate("MainWindow", "Load", None))
 
 from ModListView import ModListView

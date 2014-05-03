@@ -1,10 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os, os.path
 from mod_file import load_info
 
 class ModManager:
     def __init__(self):
+        # the directory where .cmf files are stored
+        self.mod_dir = 'mods'
+        # the file where we save our list of installed mods
+        self.mod_list_file = 'installed_mods.txt'
         # keep data of one mod loaded
         self.current_mod = None
         # dict of {mod_name: mod_data}
@@ -21,11 +26,11 @@ class ModManager:
         if installed_list is None:
             installed_list = self.installed_mods
         return self.get_mod_name(mod) in installed_list
-        
+
     def update_current_mod(self, mod_name):
         # retrieve the mod data using the mod name
         self.current_mod = self.installed_mods[mod_name]
-    
+
     def new_current_mod(self, path):
         """We just loaded a mod from the filesystem,
         so we have to load its data."""
@@ -50,3 +55,35 @@ class ModManager:
             # TODO: uninstall
             # and remove it from the record
             del self.installed_mods[self.get_mod_name(mod)]
+
+    def save_mod_list(self):
+        with open(self.mod_list_file, 'wb') as f:
+            f.writelines('\n'.join([mod_name for mod_name in
+                self.installed_mods.keys()]))
+
+    def load_mod_list(self):
+        # mods in self.mod_dir, { filename: mod_name }
+        mods_present = {}
+        
+        for filename in os.listdir(self.mod_dir):
+            try:
+                # get the name of the mod from the file
+                mods_present[filename] = self.get_mod_name(load_info(
+                    os.path.join(self.mod_dir, filename)))
+            except (XMLSyntaxError) as error:
+                if error.message:
+                    message = error.message
+                else:
+                    message = "Unknown error"
+                QMessageBox.critical(
+                    self, "CMF Parsing Error",
+                    "Oops. Something went wrong while opening the CMF:\n{}".format(
+                        message))
+        mods_to_load = (name.strip() for name in
+            open(self.mod_list_file, 'rb').readlines())
+        
+        self.installed_mods = {
+            mod_name: load_info(os.path.join(self.mod_dir, filename))
+            for filename, mod_name in mods_present.iteritems() if mod_name in mods_to_load
+        }
+        

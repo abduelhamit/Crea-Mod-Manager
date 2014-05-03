@@ -1,18 +1,19 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 from lxml import etree, objectify
 
-from helper import process_command
+from subprocess import Popen, PIPE
 
 
 def load_info(path):
-    with open("info.xsd") as open_file:
+    with open("core/info.xsd") as open_file:
         schema = etree.XMLSchema(file=open_file)
     parser = objectify.makeparser(schema=schema)
-    xml = process_command(u"7za e -so {} info.xml".format(path))
-    if not xml:
-        xml = process_command(u"tools/7za e -so {} info.xml".format(path))
+    try:
+        xml = Popen(["7za", "e", "-so", path, "info.xml"], stdout=PIPE).stdout.read()
+    except WindowsError:
+        xml = Popen(
+            ["tools\\7za", "e", "-so", path, "info.xml"], stdout=PIPE).stdout.read()
     cmf = objectify.fromstring(xml, parser)
     return cmf
 

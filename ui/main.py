@@ -6,7 +6,7 @@ from PyQt4.QtGui import (
     QMainWindow, QFileDialog, QMessageBox, QStandardItem, QStandardItemModel)
 from PyQt4.QtCore import pyqtSignature, QModelIndex, QFile
 
-from mod_file import load_info, parse_info
+from core.mod_file import load_info, parse_info
 from ui.Ui_main import Ui_MainWindow
 from ModListView import ModListView
 
@@ -35,7 +35,7 @@ class Main(QMainWindow, Ui_MainWindow):
     def update_mod_text(self, path=None):
         if path:
             try:
-                mod = load_info(path)
+                mod = load_info(str(path))
             except (XMLSyntaxError) as e:
                 if e.message:
                     message = e.message
@@ -109,6 +109,7 @@ class Main(QMainWindow, Ui_MainWindow):
         if not mod:
             return
 
+        self.modFile.setText(file_name)
         self.current_mod = mod
 
     def check_crea_path(self, path):

@@ -62,14 +62,15 @@ class ModManager:
                 self.installed_mods.keys()]))
 
     def load_mod_list(self):
-        # mods in self.mod_dir, { filename: mod_name }
-        mods_present = {}
+        # mods in mod_list_file, { mod_name: mod_info }
+        mods_to_load = { name.strip(): None for name in
+            open(self.mod_list_file, 'rb').readlines() }
         
         for filename in os.listdir(self.mod_dir):
             try:
                 # get the name of the mod from the file
-                mods_present[filename] = self.get_mod_name(load_info(
-                    os.path.join(self.mod_dir, filename)))
+                mod_info = load_info(os.path.join(self.mod_dir, filename))
+                self.installed_mods[self.get_mod_name(mod_info)] = mod_info
             except (XMLSyntaxError) as error:
                 if error.message:
                     message = error.message
@@ -79,11 +80,4 @@ class ModManager:
                     self, "CMF Parsing Error",
                     "Oops. Something went wrong while opening the CMF:\n{}".format(
                         message))
-        mods_to_load = (name.strip() for name in
-            open(self.mod_list_file, 'rb').readlines())
-        
-        self.installed_mods = {
-            mod_name: load_info(os.path.join(self.mod_dir, filename))
-            for filename, mod_name in mods_present.iteritems() if mod_name in mods_to_load
-        }
         

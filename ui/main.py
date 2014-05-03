@@ -7,6 +7,7 @@ from PyQt4.QtGui import (
 from PyQt4.QtCore import pyqtSignature, QModelIndex, QFile
 
 from core.mod_file import load_info, parse_info
+from core.ModManager import ModManager
 from ui.Ui_main import Ui_MainWindow
 from ModListView import ModListView
 
@@ -15,46 +16,47 @@ class Main(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
-        # keep data of one mod loaded
-        self.current_mod = None
-        # keep a dict of {mod_name: mod_data}
-        # TODO: subclass Item for mod data
-        # instead of keeping it in a member variable
-        self.installed_mods_data = {}
+        # instantiate our self.manager singleton
+        self.manager = ModManager()
         # ModListView.currentChanged() will emit
         # the 'current_mod_changed' signal
-        self.installedMods.current_mod_changed.connect(self.update_current_mod)
+        self.installedMods.current_mod_changed.connect(
+            self.update_current_mod)
 
     def is_current_mod_in_installed_list(self):
-        if self.current_mod is not None:
-            return self.current_mod.name.text in [row for row in [
-                str(self.installedMods.model().item(i).text()) for i in xrange(
-                    self.installedMods.model().rowCount())]]
-        return False
+        return self.manager.is_mod_installed(
+            installed_list = \
+            [str(self.installedMods.model().item(i).text()) for i in
+             xrange(self.installedMods.model().rowCount())])
 
     def update_mod_text(self, path=None):
-        if path:
-            try:
-                mod = load_info(str(path))
-            except (XMLSyntaxError) as e:
-                if e.message:
-                    message = e.message
-                else:
-                    message = "Unknown error"
-                QMessageBox.critical(
-                    self, "CMF Parsing Error",
-                    "Something went wrong while opening the CMF:\n{}".format(
-                        message))
-                return False
-        else:
-            mod = self.current_mod
-        self.out.setText(parse_info(mod))
-        return mod
+        try:
+            if path is None:
+                info_text = parse_info(self.manager.current_mod)
+            else:
+                info_text = parse_info(load_info(path))
+            self.out.setText(info_text)
+            return True
+        except (XMLSyntaxError) as error:
+            if error.message:
+                message = error.message
+            else:
+                message = "Unknown error"
+            QMessageBox.critical(
+                self, "CMF Parsing Error",
+                "Oops. Something went wrong while opening the CMF:\n{}".format(
+                    message))
+        return False
 
-    def update_current_mod(self, current_index):
-        # retrieve the mod data using the mod name
-        self.current_mod = self.installed_mods_data[
-            str(current_index.data().toString())]
+    def update_current_mod(self, index):
+        self.manager.update_current_mod(
+            str(index.data().toString())
+        )
+        self.update_mod_text()
+    
+    def new_current_mod(self, path):
+        self.manager.new_current_mod(str(path))
+        self.modFile.setText(path)
         self.update_mod_text()
 
     @pyqtSignature("")
@@ -65,34 +67,27 @@ class Main(QMainWindow, Ui_MainWindow):
     def on_installButton_clicked(self):
         # if we haven't already installed the mod
         if not self.is_current_mod_in_installed_list():
-            mod = self.update_mod_text(self.modFile.text())
-            if not mod:
-                return
-            self.current_mod = mod
-
-            self.check_crea_path(self.creaPath.text())
-
-            # install the mod
-            # TODO: install
             # add its name to the installed list
             self.installedMods.model().appendRow(
-                QStandardItem(self.current_mod.name.text))
-            # and add its data to the data record
-            self.installed_mods_data[
-                self.current_mod.name.text] = self.current_mod
+                QStandardItem(self.manager.get_mod_name()))
+            # and install it
+            self.manager.install()
 
     @pyqtSignature("")
     def on_uninstallButton_clicked(self):
-        if self.installedMods.model().rowCount() > 0:
+        if len(self.manager.installed_mods) > 0:
             if self.is_current_mod_in_installed_list():
                 self.check_crea_path(self.creaPath.text())
                 # uninstall the mod
-                # TODO: uninstall
+                self.manager.uninstall()
                 # and remove it from the installed list
                 self.installedMods.model().removeRow(
                     self.installedMods.model().indexFromItem(
                         self.installedMods.model().findItems(
-                            self.current_mod.name.text)[0]).row())
+                            self.manager.get_mod_name()
+                        )[0]
+                    ).row()
+                )
 
     @pyqtSignature("")
     def on_modFile_returnPressed(self):
@@ -102,15 +97,10 @@ class Main(QMainWindow, Ui_MainWindow):
     def on_modFileButton_clicked(self):
         file_name = QFileDialog.getOpenFileName(
             self, filter="Crea Mod File (*.cmf)")
-        if not file_name:
+        if not file_name or not self.update_mod_text(str(file_name)):
             return
-
-        mod = self.update_mod_text(file_name)
-        if not mod:
-            return
-
-        self.modFile.setText(file_name)
-        self.current_mod = mod
+        else:
+            self.new_current_mod(file_name)
 
     def check_crea_path(self, path):
         if not QFile.exists(path + "/Crea") and not QFile.exists(

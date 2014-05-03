@@ -13,3 +13,11 @@ The goals of the project:
 * Gives Workshop-like features for non-Steam users
 
 [More details here](http://siegegames.com/forums/index.php?threads/crea-mod-manager.1375/)
+
+# Licensing
+
+Because of PyQt, the licensing of Crea Mod Manager is parted into two licenses.
+
+The core module is licensed under [the zlib license](https://raw.githubusercontent.com/abduelhamit/Crea-Mod-Manager/master/core/LICENSE).
+
+Crea Mod Manager (including the GUI) is licensed under [the GPL v3](https://raw.githubusercontent.com/abduelhamit/Crea-Mod-Manager/master/LICENSE).

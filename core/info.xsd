@@ -25,35 +25,53 @@
 			<xs:all>
 				<xs:element name="name">
 					<xs:complexType>
-						<xs:simpleContent>
-							<xs:extension base="shortString">
-								<xs:attribute type="xs:language" name="lang"/>
-							</xs:extension>
-						</xs:simpleContent>
+						<xs:choice maxOccurs="unbounded">
+							<xs:element name="text">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="shortString">
+											<xs:attribute type="xs:language" name="lang"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
 					</xs:complexType>
 				</xs:element>
 				<xs:element type="shortString" name="author"/>
 				<xs:element name="desc" minOccurs="0">
 					<xs:complexType>
-						<xs:simpleContent>
-							<xs:extension base="nonEmptyString">
-								<xs:attribute type="xs:language" name="lang"/>
-							</xs:extension>
-						</xs:simpleContent>
+						<xs:choice maxOccurs="unbounded">
+							<xs:element name="text">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="nonEmptyString">
+											<xs:attribute type="xs:language" name="lang"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="shortDesc">
 					<xs:complexType>
-						<xs:simpleContent>
-							<xs:restriction base="xs:anyType">
-								<xs:simpleType>
-									<xs:restriction base="nonEmptyString">
-										<xs:maxLength value="140"/>
-									</xs:restriction>
-								</xs:simpleType>
-								<xs:attribute type="xs:language" name="lang"/>
-							</xs:restriction>
-						</xs:simpleContent>
+						<xs:choice maxOccurs="unbounded">
+							<xs:element name="text">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:restriction base="xs:anyType">
+											<xs:simpleType>
+												<xs:restriction base="nonEmptyString">
+													<xs:maxLength value="140"/>
+												</xs:restriction>
+											</xs:simpleType>
+											<xs:attribute type="xs:language" name="lang"/>
+										</xs:restriction>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
 					</xs:complexType>
 				</xs:element>
 				<xs:element type="httpLink" name="homepage"/>

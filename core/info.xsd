@@ -106,7 +106,15 @@
 				<xs:element name="tags" minOccurs="0">
 					<xs:complexType>
 						<xs:choice maxOccurs="unbounded">
-							<xs:element type="shortString" name="tag"/>
+							<xs:element name="tag">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="shortString">
+											<xs:attribute type="xs:language" name="lang"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
 						</xs:choice>
 					</xs:complexType>
 				</xs:element>

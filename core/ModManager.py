@@ -77,8 +77,3 @@ class ModManager:
                     message = error.message
                 else:
                     message = "Unknown error"
-                QMessageBox.critical(
-                    self, "CMF Parsing Error",
-                    "Oops. Something went wrong while opening the CMF:\n{}".format(
-                        message))
-        

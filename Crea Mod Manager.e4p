@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project Crea Mod Manager -->
-<!-- Saved: 2014-05-17, 10:22:03 -->
+<!-- Saved: 2014-05-17, 14:00:18 -->
 <!-- Copyright (C) 2014 Abdülhamit Yilmaz, mr.yilmaz@gmx.de -->
 <Project version="4.6">
   <Language>en</Language>
@@ -12,7 +12,11 @@
   <Author>Abdülhamit Yilmaz</Author>
   <Email>mr.yilmaz@gmx.de</Email>
   <Sources>
-    <Source>__main__.py</Source>
+    <Source>cmm/core/__init__.py</Source>
+    <Source>cmm/ui/__init__.py</Source>
+    <Source>cmm/core/mod.py</Source>
+    <Source>cmm/__init__.py</Source>
+    <Source>CMM.py</Source>
   </Sources>
   <Forms>
   </Forms>
@@ -24,7 +28,7 @@
   </Interfaces>
   <Others>
   </Others>
-  <MainScript>__main__.py</MainScript>
+  <MainScript>CMM.py</MainScript>
   <Vcs>
     <VcsType>None</VcsType>
   </Vcs>

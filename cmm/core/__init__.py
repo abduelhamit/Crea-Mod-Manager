@@ -3,3 +3,4 @@
 '''The core of CMM. It is distributed under the zlib license.'''
 
 from cmm.core.mod import Mod
+from cmm.core.info import Info

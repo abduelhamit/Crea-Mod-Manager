@@ -8,11 +8,11 @@ from lxml import etree, objectify
 
 class Info(object):
     '''The Info class.'''
-    def __init__(self):
-        with open("cmm/core/info.xsd") as schema:
-            objectify.set_default_parser(objectify.makeparser(
-                schema=etree.XMLSchema(file=schema)))
+    with open("cmm/core/info.xsd") as schema_file:
+        schema = etree.XMLSchema(file=schema_file)
+    objectify.set_default_parser(objectify.makeparser(schema=schema))
 
+    def __init__(self):
         self.xml = objectify.Element("cmf", attrib={"version": "0"})
 
     def parse_string(self, xml):
@@ -24,8 +24,13 @@ class Info(object):
         self.xml = objectify.parse(xml).getroot()
 
     def to_string(self):
-        '''Return the XML representation of this Info object as a string.'''
+        '''
+        Return the XML representation of this Info object as a string.
+        Return None if the XML representation of this Info object is not valid.
+        '''
         objectify.deannotate(self.xml, cleanup_namespaces=True)
+        if not Info.schema.validate(self.xml):
+            return None
         return etree.tostring(
             self.xml, encoding="UTF-8", xml_declaration=True,
             pretty_print=True)
@@ -41,7 +46,11 @@ class Info(object):
         '''Set the homepage URL.'''
         self.xml.homepage = url
 
-    homepage = property(get_homepage, set_homepage)
+    def del_homepage(self):
+        '''Delete the homepage URL.'''
+        del self.xml.homepage
+
+    homepage = property(get_homepage, set_homepage, del_homepage)
 
     def get_update_link(self):
         '''Return the update URL.'''

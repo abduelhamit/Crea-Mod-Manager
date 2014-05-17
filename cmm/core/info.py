@@ -42,3 +42,20 @@ class Info(object):
         self.xml.homepage = url
 
     homepage = property(get_homepage, set_homepage)
+
+    def get_update_link(self):
+        '''Return the update URL.'''
+        try:
+            return self.xml.updateLink.text
+        except AttributeError:
+            return None
+
+    def set_update_link(self, url):
+        '''Set the update URL.'''
+        self.xml.updateLink = url
+
+    def del_update_link(self):
+        '''Delete the update URL.'''
+        del self.xml.updateLink
+
+    update_link = property(get_update_link, set_update_link, del_update_link)

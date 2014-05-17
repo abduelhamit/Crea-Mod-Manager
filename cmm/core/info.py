@@ -32,7 +32,10 @@ class Info(object):
 
     def get_homepage(self):
         '''Return the homepage URL.'''
-        return self.xml.homepage.text
+        try:
+            return self.xml.homepage.text
+        except AttributeError:
+            return None
 
     def set_homepage(self, url):
         '''Set the homepage URL.'''

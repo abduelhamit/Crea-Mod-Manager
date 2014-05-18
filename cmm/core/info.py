@@ -26,11 +26,10 @@ class Info(object):
     def to_string(self):
         '''
         Return the XML representation of this Info object as a string.
-        Return None if the XML representation of this Info object is not valid.
+        Raises DocumentInvalid if the XML representation of this Info object is not valid.
         '''
         objectify.deannotate(self.xml, cleanup_namespaces=True)
-        if not Info.schema.validate(self.xml):
-            return None
+        Info.schema.assertValid(self.xml)
         return etree.tostring(
             self.xml, encoding="UTF-8", xml_declaration=True,
             pretty_print=True)

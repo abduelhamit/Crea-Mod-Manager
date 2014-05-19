@@ -49,7 +49,10 @@ class Info(object):
     @homepage.deleter
     def homepage(self):
         '''Delete the homepage URL.'''
-        del self.xml.homepage
+        try:
+            del self.xml.homepage
+        except AttributeError:
+            pass
 
     @property
     def update_link(self):
@@ -67,7 +70,10 @@ class Info(object):
     @update_link.deleter
     def update_link(self):
         '''Delete the update URL.'''
-        del self.xml.updateLink
+        try:
+            del self.xml.updateLink
+        except AttributeError:
+            pass
 
     @property
     def author(self):
@@ -85,7 +91,10 @@ class Info(object):
     @author.deleter
     def author(self):
         '''Delete the author.'''
-        del self.xml.author
+        try:
+            del self.xml.author
+        except AttributeError:
+            pass
 
     @property
     def version_string(self):
@@ -96,3 +105,31 @@ class Info(object):
             return None
         version_values = (v.text for v in self.xml.version.v)
         return version_format.format(*version_values)
+
+    @property
+    def version(self):
+        '''Return the version as a list [format_string, [*values]]'''
+        version = []
+        try:
+            version.append(self.xml.version.get("format"))
+        except AttributeError:
+            return None
+        version.append([v.text for v in self.xml.version.v])
+        return version
+
+    @version.setter
+    def version(self, val):
+        '''Set the version from a list [format_string, [*values]]'''
+        version = objectify.Element("version", format=val[0])
+        for i, v_val in enumerate(val[1]):
+            objectify.SubElement(version, "v")
+            version.v[i] = v_val
+        self.xml.version = version
+
+    @version.deleter
+    def version(self):
+        '''Delete the version.'''
+        try:
+            del self.xml.version
+        except AttributeError:
+            pass

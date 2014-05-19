@@ -4,6 +4,7 @@
 Every interaction with an info.xml file happens over a Info object.'''
 
 from lxml import etree, objectify
+from base64 import standard_b64decode, standard_b64encode
 
 
 class Info(object):
@@ -133,3 +134,28 @@ class Info(object):
             del self.xml.version
         except AttributeError:
             pass
+
+    @property
+    def identifier(self):
+        '''Return the ID as a binary string.'''
+        try:
+            return standard_b64decode(self.xml.id.text)
+        except AttributeError:
+            return None
+
+    @identifier.setter
+    def identifier(self, val):
+        '''Set the ID from a binary string.'''
+        self.xml.id = standard_b64encode(val)
+
+    @identifier.deleter
+    def identifier(self):
+        '''Delete the ID.'''
+        try:
+            del self.xml.id
+        except AttributeError:
+            pass
+
+    def generate_identifier(self):
+        '''Generates a new ID and set it.'''
+        pass

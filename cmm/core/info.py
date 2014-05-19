@@ -24,46 +24,75 @@ class Info(object):
         self.xml = objectify.parse(xml).getroot()
 
     def to_string(self):
-        '''
-        Return the XML representation of this Info object as a string.
-        Raises DocumentInvalid if the XML representation of this Info object is not valid.
-        '''
+        '''Return the XML representation of this Info object as a string.
+        Raises DocumentInvalid if the XML representation of this Info object is
+        not valid.'''
         objectify.deannotate(self.xml, cleanup_namespaces=True)
         Info.schema.assertValid(self.xml)
         return etree.tostring(
             self.xml, encoding="UTF-8", xml_declaration=True,
             pretty_print=True)
 
-    def get_homepage(self):
+    @property
+    def homepage(self):
         '''Return the homepage URL.'''
         try:
             return self.xml.homepage.text
         except AttributeError:
             return None
 
-    def set_homepage(self, url):
+    @homepage.setter
+    def homepage(self, val):
         '''Set the homepage URL.'''
-        self.xml.homepage = url
+        self.xml.homepage = val
 
-    def del_homepage(self):
+    @homepage.deleter
+    def homepage(self):
         '''Delete the homepage URL.'''
         del self.xml.homepage
 
-    homepage = property(get_homepage, set_homepage, del_homepage)
-
-    def get_update_link(self):
+    @property
+    def update_link(self):
         '''Return the update URL.'''
         try:
             return self.xml.updateLink.text
         except AttributeError:
             return None
 
-    def set_update_link(self, url):
+    @update_link.setter
+    def update_link(self, val):
         '''Set the update URL.'''
-        self.xml.updateLink = url
+        self.xml.updateLink = val
 
-    def del_update_link(self):
+    @update_link.deleter
+    def update_link(self):
         '''Delete the update URL.'''
         del self.xml.updateLink
 
-    update_link = property(get_update_link, set_update_link, del_update_link)
+    @property
+    def author(self):
+        '''Return the author.'''
+        try:
+            return self.xml.author.text
+        except AttributeError:
+            return None
+
+    @author.setter
+    def author(self, val):
+        '''Set the author.'''
+        self.xml.author = val
+
+    @author.deleter
+    def author(self):
+        '''Delete the author.'''
+        del self.xml.author
+
+    @property
+    def version_string(self):
+        '''Return the version as a string.'''
+        try:
+            version_format = self.xml.version.get("format")
+        except AttributeError:
+            return None
+        version_values = (v.text for v in self.xml.version.v)
+        return version_format.format(*version_values)
